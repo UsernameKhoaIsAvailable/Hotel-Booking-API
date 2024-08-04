@@ -1,5 +1,4 @@
-from hotel_booking.resources.room import Room
-from hotel_booking.resources.room_image import RoomImage
+from hotel_booking.models.models import Room, RoomImage
 
 
 def search_room(hotel_id):

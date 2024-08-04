@@ -1,4 +1,4 @@
-from hotel_booking.resources.voucher import Voucher
+from hotel_booking.models.models import Voucher
 
 
 def search_voucher(hotel_id):

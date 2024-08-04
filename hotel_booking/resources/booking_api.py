@@ -2,8 +2,8 @@ from datetime import date
 
 from flask_restful import fields, Resource, reqparse, marshal_with
 
-from hotel_booking.models.models import Booking
-from hotel_booking.services.booking_services import search_a_service
+from hotel_booking.models.models import Booking, ChosenServices, ChosenVoucher
+from hotel_booking.services.booking_services import search_a_service, search_a_booking
 from hotel_booking.services.modifying_services import add_data
 from hotel_booking.services.room_services import search_a_room
 from hotel_booking.services.voucher_services import search_a_voucher
@@ -38,21 +38,30 @@ class BookingApi(Resource):
     @marshal_with(booking_fields)
     def post(self):
         args = post_parser.parse_args()
-        id = generate_id()
+        booking_id = generate_id()
         room = search_a_room(args.room_id)
         base_price = room.price
         total_price = base_price
         if (args.service_id):
-            for id in args.service_id:
-                service = search_a_service(id)
+            for service_id in args.service_id:
+                chosen_service_id = generate_id()
+                chosen_service = ChosenServices(chosen_service_id, service_id, booking_id)
+                add_data(chosen_service)
+                service = search_a_service(service_id)
                 base_price += service.price
         discount = 0
         if (args.voucher_id):
-            for id in args.voucher_id:
-                voucher = search_a_voucher(id)
+            for voucher_id in args.voucher_id:
+                chosen_voucher_id = generate_id()
+                chosen_voucher = ChosenVoucher(chosen_voucher_id, voucher_id, booking_id)
+                add_data(chosen_voucher)
+                voucher = search_a_voucher(voucher_id)
                 discount += voucher.discount
         total_price -= base_price * discount / 100
-        booking = Booking(id, args.expected_check_in, args.expected_check_out, base_price, total_price, args.user_id,
+        booking = Booking(booking_id, args.expected_check_in, args.expected_check_out, base_price, total_price,
+                          args.user_id,
                           args.room_id)
         add_data(booking)
+        booking = search_a_booking(booking_id)
         return booking
+

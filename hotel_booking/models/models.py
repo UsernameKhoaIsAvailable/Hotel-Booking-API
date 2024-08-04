@@ -96,6 +96,10 @@ class ChosenServices(db.Model):
 
     # service = db.relationship('Services')
     # booking = db.relationship('Booking')
+    def __init__(self, id, service_id, booking_id):
+        self.id = id
+        self.service_id = service_id
+        self.booking_id = booking_id
 
 
 class Review(db.Model):
@@ -125,7 +129,10 @@ class ChosenVoucher(db.Model):
 
     # voucher = db.relationship('Voucher')
     # booking = db.relationship('Booking')
-
+    def __init__(self, id, voucher_id, booking_id):
+        self.id = id
+        self.voucher_id = voucher_id
+        self.booking_id = booking_id
 
 class HotelImage(db.Model):
     id = db.Column(db.CHAR(20), primary_key=True)

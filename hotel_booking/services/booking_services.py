@@ -1,11 +1,8 @@
-from hotel_booking.models.models import Booking
-from hotel_booking.resources.chosen_services import ChosenServices
-from hotel_booking.resources.room import Room
-from hotel_booking.resources.services import Services
+from hotel_booking.models.models import Booking, ChosenVoucher, ChosenServices, Services, Room
 
 
 def search_a_booking(id):
-    return Booking.query.filter(Booking.id == id).one_or_none()
+    return Booking.query.join(ChosenServices).join(ChosenVoucher).filter(Booking.id == id).one_or_none()
 
 
 def search_chosen_services(booking_id):

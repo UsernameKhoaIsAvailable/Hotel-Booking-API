@@ -1,7 +1,8 @@
 from hotel_booking.app import app, db, api
-from hotel_booking.resources.hotel_api import HotelApi
+from hotel_booking.resources.booking_api import BookingApi
 
-api.add_resource(HotelApi, '/hotel')
+
+api.add_resource(BookingApi, '/')
 db.init_app(app)
 if __name__ == '__main__':
     with app.app_context():
