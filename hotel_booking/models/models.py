@@ -34,6 +34,14 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum('guest', 'manager', 'admin'), nullable=False)
 
+    def __init__(self, id, first_name, last_name, email, password, role):
+        self.id = id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.password = password
+        self.role = role
+
 
 class Room(db.Model):
     id = db.Column(db.CHAR(20), primary_key=True)
@@ -133,6 +141,7 @@ class ChosenVoucher(db.Model):
         self.id = id
         self.voucher_id = voucher_id
         self.booking_id = booking_id
+
 
 class HotelImage(db.Model):
     id = db.Column(db.CHAR(20), primary_key=True)

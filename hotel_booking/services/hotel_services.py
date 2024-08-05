@@ -9,7 +9,7 @@ def search_hotel(district, city, checkin, checkout, capacity):
         Hotel.city == city, Hotel.district == district).order_by(Room.price & Hotel.classification).all()
 
 
-def search_a_hotel(id):
+def get_hotel(id):
     return Hotel.query.filter(Hotel.id == id).one_or_none()
 
 

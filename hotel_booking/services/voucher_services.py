@@ -1,9 +1,9 @@
 from hotel_booking.models.models import Voucher
 
 
-def search_voucher(hotel_id):
+def list_vouchers(hotel_id):
     return Voucher.query.filter(Voucher.hotel_id == hotel_id).all()
 
 
-def search_a_voucher(id):
+def get_voucher(id):
     return Voucher.query.filter(Voucher.id == id).one_or_none()
