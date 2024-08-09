@@ -33,14 +33,18 @@ class User(db.Model):
     email = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum('guest', 'manager', 'admin'), nullable=False)
+    token = db.Column(db.String(255))
+    is_verified = db.Column(db.Boolean)
 
-    def __init__(self, id, first_name, last_name, email, password, role):
+    def __init__(self, id, first_name, last_name, email, password, role, token):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.password = password
         self.role = role
+        self.token = token
+        self.is_verified = False
 
 
 class Room(db.Model):
@@ -59,6 +63,10 @@ class HotelManager(db.Model):
 
     # manager = db.relationship('User', backref='Hotel_managers')
     # hotel = db.relationship('Hotel', backref='managers')
+    def __init__(self, id, manager_id, hotel_id):
+        self.id = id
+        self.manager_id = manager_id
+        self.hotel_id = hotel_id
 
 
 class Booking(db.Model):

@@ -1,10 +1,11 @@
 from hotel_booking.app import app, db, api
 from hotel_booking.resources.booking_api import BookingApi
-from hotel_booking.resources.user_api import UserRegisterApi, UserLoginApi
+from hotel_booking.resources.hotel_api import HotelApi
+from hotel_booking.resources.user_api import UserApi
 
 api.add_resource(BookingApi, '/bookings')
-api.add_resource(UserRegisterApi, '/users/register')
-api.add_resource(UserLoginApi, '/users/login')
+api.add_resource(UserApi, '/user')
+api.add_resource(HotelApi, '/hotels/<string:id>')
 db.init_app(app)
 if __name__ == '__main__':
     with app.app_context():
