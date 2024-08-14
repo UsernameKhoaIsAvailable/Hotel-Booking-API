@@ -1,12 +1,13 @@
 from flask import jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
-from flask_restful import reqparse, fields, Resource, marshal_with
+from flask_restful import reqparse, Resource, marshal_with
 
+from hotel_booking.apis.schemas import user_fields
 from hotel_booking.models.models import User
-from hotel_booking.services.hotel_manager_services import get_hotel_managers
-from hotel_booking.services.modifying_services import add_data, update_data, delete_data
-from hotel_booking.services.user_services import get_user_by_email, get_user, list_users
-from hotel_booking.utils.utils import generate_id, hash_password, authorize, update_user, generate_verification_token
+from hotel_booking.services.hotel_manager_services import get_hotel_managers_by_manager_id
+from hotel_booking.services.modifying_services import add_data, delete_data
+from hotel_booking.services.user_services import get_user_by_email, get_user, list_users, update_user
+from hotel_booking.utils.utils import generate_id, hash_password, authorize, generate_verification_token
 
 post_parser = reqparse.RequestParser()
 post_parser.add_argument('first_name', location='json', required=True)
@@ -14,14 +15,6 @@ post_parser.add_argument('last_name', location='json', required=True)
 post_parser.add_argument('email', location='json', required=True)
 post_parser.add_argument('password', location='json', required=True)
 post_parser.add_argument('role', location='json')
-
-user_fields = {
-    'id': fields.String,
-    'first_name': fields.String,
-    'last_name': fields.String,
-    'email': fields.String,
-    'role': fields.String
-}
 
 
 class UserApi(Resource):
@@ -55,10 +48,7 @@ class UserApi(Resource):
         args = post_parser.parse_args()
         user_id = get_jwt_identity()
         user = get_user(user_id)
-        if user is None:
-            return {'msg': 'Invalid id.'}, 404
         user = update_user(user, args)
-        update_data(user)
         return user
 
     @marshal_with(user_fields)
@@ -66,8 +56,8 @@ class UserApi(Resource):
     def delete(self):
         user_id = get_jwt_identity()
         user = get_user(user_id)
-        if user.role is 'manager':
-            hotel_managers = get_hotel_managers(user.id)
+        if user.role == 'manager':
+            hotel_managers = get_hotel_managers_by_manager_id(user.id)
             for hotel_manager in hotel_managers:
                 delete_data(hotel_manager)
         delete_data(user)
@@ -79,12 +69,12 @@ class DeleteUserByAdmin(Resource):
     @jwt_required()
     def delete(self, user_id):
         claims = get_jwt()
-        if (claims['role'] == 'admin'):
+        if claims['role'] == 'admin':
             user = get_user(user_id)
             if user is None:
                 return {'msg': 'Invalid id.'}, 404
             if user.role is 'manager':
-                hotel_managers = get_hotel_managers(user.id)
+                hotel_managers = get_hotel_managers_by_manager_id(user.id)
                 for hotel_manager in hotel_managers:
                     delete_data(hotel_manager)
             delete_data(user)
@@ -97,7 +87,7 @@ class ListUser(Resource):
     @jwt_required()
     def get(self):
         claims = get_jwt()
-        if (claims['role'] == 'admin'):
+        if claims['role'] == 'admin':
             users = list_users()
             return users
         return {'msg': 'This operation is restricted to admin.'}, 403

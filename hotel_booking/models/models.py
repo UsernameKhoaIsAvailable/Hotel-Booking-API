@@ -25,6 +25,11 @@ class RoomType(db.Model):
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255), nullable=False)
 
+    def __init__(self, id, name, description):
+        self.id = id
+        self.name = name
+        self.description = description
+
 
 class User(db.Model):
     id = db.Column(db.CHAR(20), primary_key=True)
@@ -54,6 +59,14 @@ class Room(db.Model):
     type_id = db.Column(db.CHAR(20), db.ForeignKey('room_type.id'))
     capacity = db.Column(db.Integer, nullable=False)
     hotel_id = db.Column(db.CHAR(20), db.ForeignKey('hotel.id'))
+
+    def __init__(self, id, no, price, type_id, capacity, hotel_id):
+        self.id = id
+        self.no = no
+        self.price = price
+        self.type_id = type_id
+        self.capacity = capacity
+        self.hotel_id = hotel_id
 
 
 class HotelManager(db.Model):
