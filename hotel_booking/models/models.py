@@ -24,11 +24,13 @@ class RoomType(db.Model):
     id = db.Column(db.CHAR(20), primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255), nullable=False)
+    hotel_id = db.Column(db.CHAR(20), db.ForeignKey('hotel.id'))
 
-    def __init__(self, id, name, description):
+    def __init__(self, id, name, description, hotel_id):
         self.id = id
         self.name = name
         self.description = description
+        self.hotel_id = hotel_id
 
 
 class User(db.Model):
@@ -116,6 +118,12 @@ class Services(db.Model):
     hotel_id = db.Column(db.CHAR(20), db.ForeignKey('hotel.id'))
 
     # hotel = db.relationship('Hotel', backref='services')
+    def __init__(self, id, name, description, price, hotel_id):
+        self.id = id
+        self.name = name
+        self.description = description
+        self.price = price
+        self.hotel_id = hotel_id
 
 
 class ChosenServices(db.Model):
@@ -142,13 +150,27 @@ class Review(db.Model):
     # user = db.relationship('User', backref='reviews')
     # room = db.relationship('Room', backref='reviews')
 
+    def __init__(self, id, star, title, comment, user_id, room_id):
+        self.id = id
+        self.star = star
+        self.title = title
+        self.comment = comment
+        self.user_id = user_id
+        self.room_id = room_id
+
 
 class Voucher(db.Model):
     id = db.Column(db.CHAR(20), primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
     discount = db.Column(db.Integer, nullable=False)
     hotel_id = db.Column(db.CHAR(20), db.ForeignKey('hotel.id'))
 
     # hotel = db.relationship('Hotel', backref='vouchers')
+    def __init__(self, id, name, discount, hotel_id):
+        self.id = id
+        self.name = name
+        self.discount = discount
+        self.hotel_id = hotel_id
 
 
 class ChosenVoucher(db.Model):
@@ -170,6 +192,10 @@ class HotelImage(db.Model):
     hotel_id = db.Column(db.CHAR(20), db.ForeignKey('hotel.id'))
 
     # hotel = db.relationship('Hotel', backref='images')
+    def __init__(self, id, image_path, hotel_id):
+        self.id = id
+        self.image_path = image_path
+        self.hotel_id = hotel_id
 
 
 class RoomImage(db.Model):
@@ -178,11 +204,19 @@ class RoomImage(db.Model):
     room_id = db.Column(db.CHAR(20), db.ForeignKey('room.id'))
 
     # room = db.relationship('Room', backref='images')
+    def __init__(self, id, image_path, room_id):
+        self.id = id
+        self.image_path = image_path
+        self.room_id = room_id
 
 
 class ReviewImage(db.Model):
     id = db.Column(db.CHAR(20), primary_key=True)
     image_path = db.Column(db.String(255), nullable=False)
-    user_id = db.Column(db.CHAR(20), db.ForeignKey('user.id'))
+    review_id = db.Column(db.CHAR(20), db.ForeignKey('review.id'))
 
     # user = db.relationship('User', backref='review_images')
+    def __init__(self, id, image_path, review_id):
+        self.id = id
+        self.image_path = image_path
+        self.review_id = review_id
