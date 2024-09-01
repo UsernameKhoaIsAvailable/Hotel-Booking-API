@@ -21,7 +21,7 @@ room_type_fields = {
 room_fields = {
     'id': fields.String,
     'no': fields.Integer,
-    'price': fields.String,
+    'price': fields.Integer,
     'capacity': fields.Integer,
     'type': fields.Nested(room_type_fields),
     'images': fields.List(fields.Nested(room_image_fields)),

@@ -29,7 +29,7 @@ class AddAndGetListService(Resource):
     @marshal_with(service_list_fields)
     def get(self, hotel_id):
         services = get_services_by_hotel_id(hotel_id)
-        return services
+        return {'services': services}
 
 
 class UpdateAndDeleteService(Resource):

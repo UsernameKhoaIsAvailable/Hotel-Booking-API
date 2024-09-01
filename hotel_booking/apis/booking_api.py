@@ -8,7 +8,7 @@ from hotel_booking.models.models import Booking
 from hotel_booking.services.booking_services import get_booking, get_chosen_services_by_booking_id, \
     get_chosen_vouchers_by_booking_id, \
     update_booking, get_bookings_by_user_id, get_bookings_by_hotel_id, get_booking_list, calculate_base_price, \
-    calculate_total_price
+    calculate_total_price, return_booking
 from hotel_booking.services.modifying_services import add_data, update_data
 from hotel_booking.services.room_services import get_room
 from hotel_booking.utils.utils import generate_id, convert_string_to_date, subtract_2_date
@@ -37,15 +37,7 @@ class AddBooking(Resource):
         booking = Booking(booking_id, expected_check_in, expected_check_out, base_price, total_price, user_id,
                           args.room_id)
         add_data(booking)
-        booking = get_booking(booking_id)
-        chosen_services = get_chosen_services_by_booking_id(booking_id)
-        chosen_vouchers = get_chosen_vouchers_by_booking_id(booking_id)
-
-        booking.room = room
-        booking.services = chosen_services
-        booking.vouchers = chosen_vouchers
-
-        return booking
+        return return_booking(booking, room)
 
 
 class GetAndUpdateBooking(Resource):
@@ -64,7 +56,7 @@ class GetAndUpdateBooking(Resource):
             return {'msg': 'This booking does not belong to current user.'}, 403
         args = post_parser.parse_args()
         booking = update_booking(booking, args)
-        return booking
+        return return_booking(booking)
 
     @marshal_with(booking_fields)
     @jwt_required()
@@ -73,10 +65,7 @@ class GetAndUpdateBooking(Resource):
         booking = get_booking(booking_id)
         if user_id != booking.user_id:
             return {'msg': 'This booking does not belong to current user.'}, 403
-        room = get_room(booking.room_id)
-        chosen_services = get_chosen_services_by_booking_id(booking_id)
-        chosen_vouchers = get_chosen_vouchers_by_booking_id(booking_id)
-        return booking, room, chosen_services, chosen_vouchers
+        return return_booking(booking)
 
 
 class ConfirmBooking(Resource):
@@ -93,7 +82,7 @@ class ConfirmBooking(Resource):
                 if user_id == booking.user_id:
                     booking.confirmation = 'canceled'
                     update_data(booking)
-                    return booking
+                    return return_booking(booking)
                 return {'msg': 'This booking does not belong to current user.'}, 403
             elif claims['role'] == 'manager':
                 manager_id = get_jwt_identity()
@@ -101,7 +90,7 @@ class ConfirmBooking(Resource):
                     args = post_parser.parse_args()
                     booking.confirmation = args.confirmation
                     update_data(booking)
-                    return booking
+                    return return_booking(booking)
                 return {'msg': ''}, 403
         return {'msg': ''}
 

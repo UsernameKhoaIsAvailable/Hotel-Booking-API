@@ -28,7 +28,7 @@ class AddAndGetListVoucher(Resource):
     @marshal_with(voucher_list_fields)
     def get(self, hotel_id):
         vouchers = get_vouchers_by_hotel_id(hotel_id)
-        return vouchers
+        return {'vouchers': vouchers}
 
 
 class UpdateAndDeleteVoucher(Resource):

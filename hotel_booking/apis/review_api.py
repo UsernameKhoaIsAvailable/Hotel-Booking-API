@@ -34,7 +34,7 @@ class AddAndGetListReview(Resource):
         for review in reviews:
             images = get_review_images_by_review_id(review.id)
             review.images = images
-        return reviews
+        return {'reviews': reviews}
 
 
 class UpdateAndDeleteReview(Resource):

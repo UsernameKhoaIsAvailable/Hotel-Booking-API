@@ -32,7 +32,9 @@ class AddRoom(Resource):
             add_data(room)
             update_room_images(room_id, args.image_paths)
             images = get_room_images_by_room_id(room_id)
-            return room, room_type, images
+            room.type = room_type
+            room.images = images
+            return room
         return {'msg': ''}, 403
 
 
@@ -44,7 +46,9 @@ class RoomApi(Resource):
             return {'msg': 'Room not found.'}, 404
         room_type = get_room_type(room.type_id)
         images = get_room_images_by_room_id(room_id)
-        return room, room_type, images
+        room.type = room_type
+        room.images = images
+        return room
 
     @marshal_with(room_fields)
     @jwt_required()
@@ -65,7 +69,9 @@ class RoomApi(Resource):
             update_room_images(room_id, args.image_paths)
             images = get_room_images_by_room_id(room_id)
             room_type = get_room_type(room.type_id)
-            return room, room_type, images
+            room.type = room_type
+            room.images = images
+            return room
         return {'msg': ''}, 403
 
     @jwt_required()

@@ -61,12 +61,11 @@ class UserApi(Resource):
 
 
 class Login(Resource):
-    @marshal_with(user_fields)
     def post(self, email):
         post_parser = reqparse.RequestParser()
         post_parser.add_argument('password', location='json', required=True)
         args = post_parser.parse_args()
-        user = get_user_by_email(args.email)
+        user = get_user_by_email(email)
         if user is None:
             return {"msg": "Username or password is invalid."}, 401
         is_valid = authorize(args.password, user.password)

@@ -28,7 +28,7 @@ class AddAndGetListRoomType(Resource):
     @marshal_with(room_type_list_fields)
     def get(self, hotel_id):
         room_types = get_room_types_by_hotel_id(hotel_id)
-        return room_types
+        return {'room_types': room_types}
 
 
 class UpdateAndDeleteRoomType(Resource):

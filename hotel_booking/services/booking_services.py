@@ -54,17 +54,10 @@ def update_booking(booking, args):
 
 
 def get_booking_list(bookings):
-    chosen_services_list = []
-    chosen_vouchers_list = []
-    rooms = []
-    for booking in bookings:
-        room = get_room(booking.room_id)
-        chosen_services = get_chosen_services_by_booking_id(booking.id)
-        chosen_vouchers = get_chosen_vouchers_by_booking_id(booking.id)
-        rooms.append(room)
-        chosen_services_list.append(chosen_services)
-        chosen_vouchers_list.append(chosen_vouchers)
-    return bookings, rooms, chosen_services_list, chosen_vouchers_list
+    i = 0
+    while i < len(bookings):
+        bookings[i] = return_booking(bookings[i])
+    return {'bookings': bookings}
 
 
 def calculate_base_price(service_ids, booking_id, base_price):
@@ -94,3 +87,14 @@ def calculate_total_price(voucher_ids, booking_id, base_price):
             discount += voucher.discount
     total_price -= base_price * discount / 100
     return total_price
+
+
+def return_booking(booking, room=None):
+    if room is None:
+        room = get_room(booking.room_id)
+    chosen_services = get_chosen_services_by_booking_id(booking.id)
+    chosen_vouchers = get_chosen_vouchers_by_booking_id(booking.id)
+    booking.room = room
+    booking.services = chosen_services
+    booking.vouchers = chosen_vouchers
+    return booking

@@ -3,7 +3,7 @@ from hotel_booking.services.modifying_services import update_data
 
 
 def get_room_type(id):
-    return RoomType.query.filter(RoomType.id == id).one_or_none
+    return RoomType.query.filter(RoomType.id == id).one_or_none()
 
 
 def get_room_types_by_hotel_id(hotel_id):
